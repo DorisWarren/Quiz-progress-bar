@@ -56,6 +56,12 @@ const handleClick = e => {
   }
   return <div className="error"> {error}</div>;
 }
+const renderResultMark = (question, answer) => {
+  if(question.correct_answer === answer.answer) {
+    return <span className="correct">Correct</span>
+  }
+  return <span className="failed">Failed</span>
+};
 const renderResultsData = () => {
   return answers.map( answer => {
     const question = questions.find(
@@ -63,7 +69,7 @@ const renderResultsData = () => {
     );
     return (
       <div key={question.id}>
-        {question.question}
+        {question.question} - {renderResultMark(question,answer)}
       </div>
     );
   });
