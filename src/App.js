@@ -8,6 +8,7 @@ function App() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [answers, setAnswers] = useState([]);
+  const [showResults, setShowResults] = useState(false);
   const [error, setError] = useState();
 
   const questions = [
@@ -46,20 +47,39 @@ const question = questions[currentQuestion];
 
 const handleClick = e => {
   setCurrentAnswer (e.target.value);
+  setError('');
 };
 
  const renderError = () => {
   if (!error) {
     return; 
   }
-  return <div className="error"> error</div>;
+  return <div className="error"> {error}</div>;
 }
-
+const renderResultsData = () => {
+  return answers.map( answer => {
+    const question = questions.find(
+      question => question.id === answer.questionId
+    );
+    return (
+      <div key={question.id}>
+        {question.question}
+      </div>
+    );
+  });
+};
+const restart = () => {
+  setAnswers([]);
+  setCurrentAnswer('')
+  setCurrentQuestion(0)
+  setShowResults(false);
+};
 const next = () => {
   const answer = {questionId:question.id, answer: currentAnswer};
 
   if (!currentAnswer) {
-    setError();
+    setError('Please select an option');
+    return;
   }
   
   answers.push(answer);
@@ -70,7 +90,19 @@ const next = () => {
     setCurrentQuestion(currentQuestion + 1)
     return;
   }
-}
+  setShowResults(true)
+};
+
+
+if (showResults) {
+  return (
+    <div className="container results">
+      <h2>Results</h2>
+      <ul> {renderResultsData()}</ul>
+      <button className="btn btn-primary" onClick={restart}>Restart</button>
+    </div>
+  )
+} else {
 
   return (
     <div className="container">
@@ -84,6 +116,6 @@ const next = () => {
       <button className="btn btn-primary" onClick={next}>Confirm and continue</button>
     </div>
   );
-}
+}}
 
 export default App;
